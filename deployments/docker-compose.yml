@@ -1,0 +1,60 @@
+version: '3'
+services:
+
+  database:
+    image: "postgres"
+    environment:
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_DB=news-db
+    # volumes:
+    #   - /var/lib/postgresql/data/:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
+
+  migrations:
+    image: golang:1.15-alpine
+    environment:
+      - DB_USER=test
+      - DB_PASS=test
+      - DB_HOST=database
+      - DB_PORT=5432
+      - DB_NAME=news-db
+      - DB_MAX_CONNS=32
+      - DB_MAX_LIFETIME=5m
+      - DB_TIMEOUT=5s
+    volumes:
+      - ../:/app
+    working_dir: /app/cmd/migrate
+    command: go run main.go
+    depends_on:
+      - database
+
+  news-aggregator:
+    image: golang:1.15-alpine
+    ports:
+      - 8086:8086
+    environment:
+      - APP_NAME=news-aggregator
+      - APP_DEBUG=true
+      - HTTP_SERVER_PORT=8086
+      - DB_USER=test
+      - DB_PASS=test
+      - DB_HOST=database
+      - DB_PORT=5432
+      - DB_NAME=news-db
+      - DB_MAX_CONNS=32
+      - DB_MAX_LIFETIME=5m
+      - DB_TIMEOUT=5s
+      - LOGGER_ADDRESS=0.0.0.0:8000
+      - LOGGER_TAG=news-aggregator
+      - LOGGER_LEVEL=DEBUG
+      - LOGGER_POD_NAME=kube01
+      - LOGGER_POD_NODE=node01
+      - LOGGER_POD_NAMESPACE=namespace01
+    volumes:
+      - ../:/app
+    working_dir: /app/cmd
+    command: go run main.go
+    depends_on:
+      - migrations
