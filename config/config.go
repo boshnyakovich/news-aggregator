@@ -15,11 +15,11 @@ type HTTPConfig struct {
 }
 
 type Database struct {
-	User        string        `env:"DB_USER" default:"test"`
-	Pass        string        `env:"DB_PASS" default:"test"`
-	Host        string        `env:"DB_HOST" default:"localhost"`
-	Port        uint          `env:"DB_PORT" default:":8086"`
-	Name        string        `env:"DB_NAME" default:"news-db"`
+	User        string        `env:"DB_USER" envDefault:"test"`
+	Pass        string        `env:"DB_PASS" envDefault:"test"`
+	Host        string        `env:"DB_HOST" envDefault:"localhost"`
+	Port        uint          `env:"DB_PORT" envDefault:"8086"`
+	Name        string        `env:"DB_NAME" envDefault:"news-db"`
 	MaxConns    int           `env:"DB_MAX_CONNS"`
 	MaxLifetime time.Duration `env:"DB_MAX_LIFETIME"`
 

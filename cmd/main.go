@@ -64,7 +64,8 @@ func main() {
 		log.Fatalf("error while init server: %v \n", err)
 	}
 
-	server.Router().GET("/news", handlers.GetNews)
+	server.Router().GET("/habr", handlers.GetTopHabrNews)
+	server.Router().GET("/four_pda", handlers.GetFourPDANewsByDate)
 
 	wg := &sync.WaitGroup{}
 	wg.Add(2)

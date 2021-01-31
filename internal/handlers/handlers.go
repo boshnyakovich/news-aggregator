@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/boshnyakovich/news-aggregator/internal/service"
 	"github.com/boshnyakovich/news-aggregator/pkg/logger"
 	"github.com/jmoiron/sqlx"
@@ -23,12 +24,28 @@ func NewHandlers(service *service.Service, db *sqlx.DB, log *logger.Logger) *Han
 	}
 }
 
-func (h *Handlers) GetNews(ctx *fasthttp.RequestCtx) {
+func (h *Handlers) GetTopHabrNews(ctx *fasthttp.RequestCtx) {
+	var errorMessage string
+	statusCode := 200
+
+	news, err := h.service.GetTopHabrNews()
+	if err != nil {
+		statusCode, errorMessage = 500, fmt.Sprintf("error getting news from storage")
+
+		h.log.Errorf("error getting top habr news from storage: %s", err)
+		decorateResponse(ctx, statusCode, nil, errorMessage)
+		return
+	}
+
+	decorateResponse(ctx, statusCode, news, "")
+}
+
+func (h *Handlers) GetFourPDANewsByDate(ctx *fasthttp.RequestCtx) {
 	/*
 		var errorMessage string
 		statusCode := 200
 
-		news, err := h.service.GetNews()
+		news, err := h.service.GetNewsByDate()
 		if err != nil {
 			statusCode, errorMessage = 500, fmt.Sprintf("error getting news from storage")
 
@@ -46,6 +63,7 @@ func (h *Handlers) LivenessHandler(ctx *fasthttp.RequestCtx) {
 	if err := h.db.Ping(); err != nil {
 		ctx.Response.SetStatusCode(500)
 	}
+	h.log.Info("Alive")
 }
 
 type response struct {

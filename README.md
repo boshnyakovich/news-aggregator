@@ -17,7 +17,7 @@ https://www.getpostman.com/collections/-
 
 Liveness probe для проверки соединения с бд. Отправляет 500 status code, если нет связи с бд.   
 
-## Описание Environments Variables
+## Environments Variables
    
    Variable             | Description
    ------------------   | -----------
