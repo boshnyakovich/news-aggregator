@@ -24,13 +24,30 @@ func NewHandlers(service *service.Service, db *sqlx.DB, log *logger.Logger) *Han
 	}
 }
 
-func (h *Handlers) GetTopHabrNews(ctx *fasthttp.RequestCtx) {
+func (h *Handlers) InsertHabrNews(ctx *fasthttp.RequestCtx) {
 	var errorMessage string
 	statusCode := 200
 
-	news, err := h.service.GetTopHabrNews()
+	err := h.service.InsertHabrNews(ctx)
 	if err != nil {
-		statusCode, errorMessage = 500, fmt.Sprintf("error getting news from storage")
+		statusCode, errorMessage = 500, fmt.Sprintf("error getting top habr news from storage")
+
+		h.log.Errorf("error getting top habr news from storage: %s", err)
+		decorateResponse(ctx, statusCode, nil, errorMessage)
+		return
+	}
+
+	decorateResponse(ctx, statusCode, nil, "")
+
+}
+
+func (h *Handlers) GetHabrNews(ctx *fasthttp.RequestCtx) {
+	var errorMessage string
+	statusCode := 200
+
+	news, err := h.service.GetHabrNews(ctx)
+	if err != nil {
+		statusCode, errorMessage = 500, fmt.Sprintf("error getting top habr news from storage")
 
 		h.log.Errorf("error getting top habr news from storage: %s", err)
 		decorateResponse(ctx, statusCode, nil, errorMessage)
@@ -40,30 +57,45 @@ func (h *Handlers) GetTopHabrNews(ctx *fasthttp.RequestCtx) {
 	decorateResponse(ctx, statusCode, news, "")
 }
 
-func (h *Handlers) GetFourPDANewsByDate(ctx *fasthttp.RequestCtx) {
-	/*
-		var errorMessage string
-		statusCode := 200
+func (h *Handlers) InsertFontankaNews(ctx *fasthttp.RequestCtx) {
+	var errorMessage string
+	statusCode := 200
 
-		news, err := h.service.GetNewsByDate()
-		if err != nil {
-			statusCode, errorMessage = 500, fmt.Sprintf("error getting news from storage")
+	err := h.service.InsertFontankaNews(ctx)
+	if err != nil {
+		statusCode, errorMessage = 500, fmt.Sprintf("error insert fontanka news from storage")
 
-			h.log.Errorf("error getting news from storage: %s", err)
-			decorateResponse(ctx, statusCode, nil, errorMessage)
-			return
-		}
+		h.log.Errorf("error insert fontanka news from storage: %s", err)
+		decorateResponse(ctx, statusCode, nil, errorMessage)
+		return
+	}
 
-		decorateResponse(ctx, statusCode, news, "")
+	decorateResponse(ctx, statusCode, nil, "")
 
-	*/
+}
+
+func (h *Handlers) GetFontankaNews(ctx *fasthttp.RequestCtx) {
+	var errorMessage string
+	statusCode := 200
+
+	news, err := h.service.GetFontankaNews(ctx)
+	if err != nil {
+		statusCode, errorMessage = 500, fmt.Sprintf("error getting fontanka news from storage")
+
+		h.log.Errorf("error getting fontanka news from storage: %s", err)
+		decorateResponse(ctx, statusCode, nil, errorMessage)
+		return
+	}
+
+	decorateResponse(ctx, statusCode, news, "")
+
 }
 
 func (h *Handlers) LivenessHandler(ctx *fasthttp.RequestCtx) {
 	if err := h.db.Ping(); err != nil {
 		ctx.Response.SetStatusCode(500)
 	}
-	h.log.Info("Alive")
+	decorateResponse(ctx, 200, "Alive!", "")
 }
 
 type response struct {

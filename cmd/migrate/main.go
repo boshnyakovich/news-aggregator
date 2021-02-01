@@ -7,8 +7,8 @@ import (
 
 	_ "github.com/lib/pq"
 
-	"github.com/pressly/goose"
 	"github.com/boshnyakovich/news-aggregator/config"
+	"github.com/pressly/goose"
 )
 
 const (

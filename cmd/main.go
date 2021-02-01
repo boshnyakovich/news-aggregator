@@ -9,6 +9,7 @@ import (
 	"github.com/boshnyakovich/news-aggregator/internal/service"
 	"github.com/boshnyakovich/news-aggregator/pkg/fasthttpserver"
 	"github.com/boshnyakovich/news-aggregator/pkg/logger"
+	"github.com/boshnyakovich/news-aggregator/pkg/parser"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"log"
@@ -49,7 +50,8 @@ func main() {
 	defer db.Close()
 
 	repo := repository.NewRepo(db, log)
-	service := service.NewService(repo, log)
+	parser := parser.NewParser(log)
+	service := service.NewService(repo, parser, log)
 	handlers := handlers.NewHandlers(service, db, log)
 
 	server, err := fasthttpserver.New().
@@ -64,8 +66,8 @@ func main() {
 		log.Fatalf("error while init server: %v \n", err)
 	}
 
-	server.Router().GET("/habr", handlers.GetTopHabrNews)
-	server.Router().GET("/four_pda", handlers.GetFourPDANewsByDate)
+	server.Router().POST("/habr", handlers.InsertHabrNews)
+	server.Router().POST("/fontanka", handlers.InsertFontankaNews)
 
 	wg := &sync.WaitGroup{}
 	wg.Add(2)
