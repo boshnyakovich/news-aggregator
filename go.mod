@@ -11,6 +11,7 @@ require (
 	github.com/fasthttp/router v1.3.5
 	github.com/gemnasium/logrus-graylog-hook/v3 v3.0.2
 	github.com/geziyor/geziyor v0.0.0-20210128175025-129402d754a6
+	github.com/gofrs/uuid v4.0.0+incompatible
 	github.com/jmoiron/sqlx v1.3.1
 	github.com/lib/pq v1.9.0
 	github.com/pkg/errors v0.9.1

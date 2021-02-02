@@ -3,7 +3,7 @@ package dao
 import "time"
 
 type HabrNews struct {
-	ID              uint64    `db:"id"`
+	ID              string    `db:"id"`
 	Author          string    `db:"author"`
 	AuthorLink      string    `db:"author_link"`
 	Title           string    `db:"title"`
@@ -16,6 +16,7 @@ type HabrNews struct {
 
 func (h *HabrNews) InsertColumns() []string {
 	return []string{
+		"id",
 		"author",
 		"author_link",
 		"title",

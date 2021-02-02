@@ -5,7 +5,7 @@ import (
 )
 
 type FontankaNews struct {
-	ID              uint64    `db:"id"`
+	ID              string    `db:"id"`
 	Title           string    `db:"title"`
 	PublicationDate string    `db:"publication_date"`
 	Link            string    `db:"link"`

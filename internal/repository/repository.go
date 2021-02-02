@@ -6,6 +6,7 @@ import (
 	"github.com/boshnyakovich/news-aggregator/internal/models/dao"
 	"github.com/boshnyakovich/news-aggregator/internal/models/domain"
 	"github.com/boshnyakovich/news-aggregator/pkg/logger"
+	"github.com/gofrs/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 	"time"
@@ -28,31 +29,35 @@ const (
 	fontankaTableName = "fontanka_news"
 )
 
-func (r *Repo) InsertFontankaNews(ctx context.Context, news []domain.FontankaNews) error {
+func (r *Repo) InsertFontankaNews(ctx context.Context, news domain.FontankaNews) error {
 	const op = "repositories.insert_fontanka_news"
 
-	for _, n := range news {
-		var fn dao.FontankaNews
-		fn.Title = n.Title
-		fn.PublicationDate = n.PublicationDate
-		fn.Link = n.Link
-		fn.CreatedAt = time.Now()
+	var fn dao.FontankaNews
+	id, err := uuid.NewV4()
+	if err != nil {
+		return errors.Wrap(err, op)
+	}
 
-		columns, values := fn.InsertColumns(), fn.Values()
+	fn.ID = id.String()
+	fn.Title = news.Title
+	fn.PublicationDate = news.PublicationDate
+	fn.Link = news.Link
+	fn.CreatedAt = time.Now()
 
-		sql, args, err := squirrel.
-			Insert(fontankaTableName).
-			Columns(columns...).
-			Values(values...).
-			PlaceholderFormat(squirrel.Dollar).
-			ToSql()
-		if err != nil {
-			return errors.Wrap(err, op)
-		}
-		_, err = r.db.QueryContext(ctx, sql, args...)
-		if err != nil {
-			return errors.Wrap(err, op)
-		}
+	columns, values := fn.InsertColumns(), fn.Values()
+
+	sql, args, err := squirrel.
+		Insert(fontankaTableName).
+		Columns(columns...).
+		Values(values...).
+		PlaceholderFormat(squirrel.Dollar).
+		ToSql()
+	if err != nil {
+		return errors.Wrap(err, op)
+	}
+	_, err = r.db.QueryContext(ctx, sql, args...)
+	if err != nil {
+		return errors.Wrap(err, op)
 	}
 
 	return nil
@@ -64,36 +69,40 @@ func (r *Repo) GetFontankaNews() ([]dao.FontankaNews, error) {
 	return nil, nil
 }
 
-func (r *Repo) InsertHabrNews(ctx context.Context, news []domain.HabrNews) error {
+func (r *Repo) InsertHabrNews(ctx context.Context, news domain.HabrNews) error {
 	const op = "repositories.insert_habr_news"
 
-	for _, n := range news {
-		var hn dao.HabrNews
-		hn.Author              = n.Author
-		hn.AuthorLink          = n.AuthorLink
-		hn.Title               = n.Title
-		hn.Preview             = n.Preview
-		hn.Views               = n.Views
-		hn.PublicationDate     = n.PublicationDate
-		hn.Link                = n.Link
-		hn.CreatedAt           = time.Now()
+	var hn dao.HabrNews
+	id, err := uuid.NewV4()
+	if err != nil {
+		return errors.Wrap(err, op)
+	}
 
+	hn.ID = id.String()
+	hn.Author = news.Author
+	hn.AuthorLink = news.AuthorLink
+	hn.Title = news.Title
+	hn.Preview = news.Preview
+	hn.Views = news.Views
+	hn.PublicationDate = news.PublicationDate
+	hn.Link = news.Link
+	hn.CreatedAt = time.Now()
 
-		columns, values := hn.InsertColumns(), hn.Values()
+	columns, values := hn.InsertColumns(), hn.Values()
 
-		sql, args, err := squirrel.
-			Insert(habrTableName).
-			Columns(columns...).
-			Values(values...).
-			PlaceholderFormat(squirrel.Dollar).
-			ToSql()
-		if err != nil {
-			return errors.Wrap(err, op)
-		}
-		_, err = r.db.QueryContext(ctx, sql, args...)
-		if err != nil {
-			return errors.Wrap(err, op)
-		}
+	sql, args, err := squirrel.
+		Insert(habrTableName).
+		Columns(columns...).
+		Values(values...).
+		PlaceholderFormat(squirrel.Dollar).
+		ToSql()
+	if err != nil {
+		return errors.Wrap(err, op)
+	}
+
+	_, err = r.db.QueryContext(ctx, sql, args...)
+	if err != nil {
+		return errors.Wrap(err, op)
 	}
 
 	return nil

@@ -2,11 +2,17 @@ package parser
 
 import (
 	"github.com/PuerkitoBio/goquery"
+	"github.com/boshnyakovich/news-aggregator/internal/models/domain"
 	"github.com/boshnyakovich/news-aggregator/pkg/logger"
 	"github.com/geziyor/geziyor"
 	"github.com/geziyor/geziyor/client"
 	"github.com/geziyor/geziyor/export"
 	"regexp"
+)
+
+const (
+	habr     = "https://habr.com/ru/top/"
+	fontanka = "https://www.fontanka.ru/"
 )
 
 type Parser struct {
@@ -19,25 +25,20 @@ func NewParser(log *logger.Logger) *Parser {
 	}
 }
 
-func (p *Parser) StartParse(website string) {
-	switch website {
-	case "habr":
-		{
-			geziyor.NewGeziyor(&geziyor.Options{
-				StartURLs: []string{"https://habr.com/ru/top/"},
-				ParseFunc: p.parseHabr,
-				Exporters: []export.Exporter{&export.JSON{}},
-			}).Start()
-		}
-	case "fontanka":
-		{
-			geziyor.NewGeziyor(&geziyor.Options{
-				StartURLs: []string{"https://www.fontanka.ru/"},
-				ParseFunc: p.parseFontanka,
-				Exporters: []export.Exporter{&export.JSON{}},
-			}).Start()
-		}
-	}
+func (p *Parser) StartParseHabr(exporter export.Exporter) {
+	geziyor.NewGeziyor(&geziyor.Options{
+		StartURLs: []string{habr},
+		ParseFunc: p.parseHabr,
+		Exporters: []export.Exporter{exporter},
+	}).Start()
+}
+
+func (p *Parser) StartParseFontanka(exporter export.Exporter) {
+	geziyor.NewGeziyor(&geziyor.Options{
+		StartURLs: []string{fontanka},
+		ParseFunc: p.parseFontanka,
+		Exporters: []export.Exporter{&export.PrettyPrint{}},
+	}).Start()
 }
 
 func (p *Parser) parseHabr(g *geziyor.Geziyor, r *client.Response) {
@@ -52,14 +53,14 @@ func (p *Parser) parseHabr(g *geziyor.Geziyor, r *client.Response) {
 			p.log.Error("Cannot parse author link")
 		}
 
-		g.Exports <- map[string]interface{}{
-			"author":           s.Find(".user-info__nickname_small").Text(),
-			"author_link":      authorLink,
-			"title":            s.Find(".post__title_link").Text(),
-			"preview":          s.Find(".post__text_v1").Text(),
-			"views":            s.Find(".post-stats__views-count").Text(),
-			"publication_date": s.Find(".post__time").Text(),
-			"link":             link,
+		g.Exports <- domain.HabrNews{
+			Author:          s.Find(".user-info__nickname_small").Text(),
+			AuthorLink:      authorLink,
+			Title:           s.Find(".post__title_link").Text(),
+			Preview:         s.Find(".post__text_v1").Text(),
+			Views:           s.Find(".post-stats__views-count").Text(),
+			PublicationDate: s.Find(".post__time").Text(),
+			Link:            link,
 		}
 	})
 }
