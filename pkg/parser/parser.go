@@ -41,7 +41,27 @@ func (p *Parser) StartParse(website string) {
 }
 
 func (p *Parser) parseHabr(g *geziyor.Geziyor, r *client.Response) {
+	r.HTMLDoc.Find(".post").Each(func(i int, s *goquery.Selection) {
+		link, ok := s.Find(".post__title_link").Attr("href")
+		if !ok {
+			p.log.Error("Cannot parse link")
+		}
 
+		authorLink, ok := s.Find(".post__user-info.user-info").Attr("href")
+		if !ok {
+			p.log.Error("Cannot parse author link")
+		}
+
+		g.Exports <- map[string]interface{}{
+			"author":           s.Find(".user-info__nickname_small").Text(),
+			"author_link":      authorLink,
+			"title":            s.Find(".post__title_link").Text(),
+			"preview":          s.Find(".post__text_v1").Text(),
+			"views":            s.Find(".post-stats__views-count").Text(),
+			"publication_date": s.Find(".post__time").Text(),
+			"link":             link,
+		}
+	})
 }
 
 func (p *Parser) parseFontanka(g *geziyor.Geziyor, r *client.Response) {
@@ -51,7 +71,7 @@ func (p *Parser) parseFontanka(g *geziyor.Geziyor, r *client.Response) {
 			ok   bool
 		)
 		if link, ok = s.Find(".HFd-").Attr("href"); !ok {
-			p.log.Error("Cannot find link")
+			p.log.Error("Cannot parse link")
 		} else {
 			match, err := regexp.MatchString("http", link)
 			if err == nil && !match {

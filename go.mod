@@ -3,7 +3,7 @@ module github.com/boshnyakovich/news-aggregator
 go 1.15
 
 require (
-	github.com/Masterminds/squirrel v1.5.0 // indirect
+	github.com/Masterminds/squirrel v1.5.0
 	github.com/PuerkitoBio/goquery v1.6.1
 	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/caarlos0/env v3.5.0+incompatible

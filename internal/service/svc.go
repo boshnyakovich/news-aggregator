@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"github.com/boshnyakovich/news-aggregator/internal/models"
+	"github.com/boshnyakovich/news-aggregator/internal/models/domain"
 	"github.com/boshnyakovich/news-aggregator/internal/repository"
 	"github.com/boshnyakovich/news-aggregator/pkg/logger"
 	"github.com/boshnyakovich/news-aggregator/pkg/parser"
@@ -31,10 +31,17 @@ func (s *Service) InsertHabrNews(ctx context.Context) error {
 	const op = "services.insert_habr_news"
 	s.parser.StartParse(habr)
 
+	// TODO: get data
+	var news []domain.HabrNews
+	err := s.repo.InsertHabrNews(ctx, news)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func (s *Service) GetHabrNews(ctx context.Context) ([]models.HabrNews, error) {
+func (s *Service) GetHabrNews(ctx context.Context) ([]domain.HabrNews, error) {
 	const op = "services.get_habr_news"
 	s.parser.StartParse(habr)
 
@@ -47,7 +54,7 @@ func (s *Service) InsertFontankaNews(ctx context.Context) error {
 	s.parser.StartParse(fontanka)
 
 	// TODO: get data
-	var news []models.FontankaNews
+	var news []domain.FontankaNews
 	err := s.repo.InsertFontankaNews(ctx, news)
 	if err != nil {
 		return err
@@ -56,7 +63,7 @@ func (s *Service) InsertFontankaNews(ctx context.Context) error {
 	return nil
 }
 
-func (s *Service) GetFontankaNews(ctx context.Context) ([]models.FontankaNews, error) {
+func (s *Service) GetFontankaNews(ctx context.Context) ([]domain.FontankaNews, error) {
 	const op = "services.get_fontanka_news"
 
 	s.parser.StartParse(fontanka)
