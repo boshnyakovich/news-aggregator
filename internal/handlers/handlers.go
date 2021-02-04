@@ -57,15 +57,15 @@ func (h *Handlers) GetHabrNews(ctx *fasthttp.RequestCtx) {
 	decorateResponse(ctx, statusCode, news, "")
 }
 
-func (h *Handlers) InsertFontankaNews(ctx *fasthttp.RequestCtx) {
+func (h *Handlers) InsertHTNews(ctx *fasthttp.RequestCtx) {
 	var errorMessage string
 	statusCode := 200
 
-	err := h.service.InsertFontankaNews(ctx)
+	err := h.service.InsertHTNews(ctx)
 	if err != nil {
-		statusCode, errorMessage = 500, fmt.Sprintf("error insert fontanka news from storage")
+		statusCode, errorMessage = 500, fmt.Sprintf("error insert ht news from storage")
 
-		h.log.Errorf("error insert fontanka news from storage: %s", err)
+		h.log.Errorf("error insert ht news from storage: %s", err)
 		decorateResponse(ctx, statusCode, nil, errorMessage)
 		return
 	}
@@ -74,15 +74,15 @@ func (h *Handlers) InsertFontankaNews(ctx *fasthttp.RequestCtx) {
 
 }
 
-func (h *Handlers) GetFontankaNews(ctx *fasthttp.RequestCtx) {
+func (h *Handlers) GetHTNewsNews(ctx *fasthttp.RequestCtx) {
 	var errorMessage string
 	statusCode := 200
 
-	news, err := h.service.GetFontankaNews(ctx)
+	news, err := h.service.GetHTNews(ctx)
 	if err != nil {
-		statusCode, errorMessage = 500, fmt.Sprintf("error getting fontanka news from storage")
+		statusCode, errorMessage = 500, fmt.Sprintf("error getting ht news from storage")
 
-		h.log.Errorf("error getting fontanka news from storage: %s", err)
+		h.log.Errorf("error getting ht news from storage: %s", err)
 		decorateResponse(ctx, statusCode, nil, errorMessage)
 		return
 	}

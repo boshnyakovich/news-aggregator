@@ -67,7 +67,7 @@ func main() {
 	}
 
 	server.Router().POST("/habr", handlers.InsertHabrNews)
-	server.Router().POST("/fontanka", handlers.InsertFontankaNews)
+	server.Router().POST("/hi_tech_news", handlers.InsertHTNews)
 
 	wg := &sync.WaitGroup{}
 	wg.Add(2)

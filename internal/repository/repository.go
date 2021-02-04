@@ -9,6 +9,7 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
+	"log"
 	"time"
 )
 
@@ -25,29 +26,31 @@ func NewRepo(db *sqlx.DB, log *logger.Logger) *Repo {
 }
 
 const (
-	habrTableName     = "habr_news"
-	fontankaTableName = "fontanka_news"
+	habrTableName = "habr_news"
+	htTableName   = "ht_news"
 )
 
-func (r *Repo) InsertFontankaNews(ctx context.Context, news domain.FontankaNews) error {
-	const op = "repositories.insert_fontanka_news"
+func (r *Repo) InsertHTNews(ctx context.Context, news domain.HTNews) error {
+	const op = "repositories.insert_ht_news"
 
-	var fn dao.FontankaNews
+	log.Println(op, news)
+	var ht dao.HTNews
 	id, err := uuid.NewV4()
 	if err != nil {
 		return errors.Wrap(err, op)
 	}
 
-	fn.ID = id.String()
-	fn.Title = news.Title
-	fn.PublicationDate = news.PublicationDate
-	fn.Link = news.Link
-	fn.CreatedAt = time.Now()
+	ht.ID = id.String()
+	ht.Category = news.Category
+	ht.Title = news.Title
+	ht.Preview = news.Preview
+	ht.Link = news.Link
+	ht.CreatedAt = time.Now()
 
-	columns, values := fn.InsertColumns(), fn.Values()
+	columns, values := ht.InsertColumns(), ht.Values()
 
 	sql, args, err := squirrel.
-		Insert(fontankaTableName).
+		Insert(htTableName).
 		Columns(columns...).
 		Values(values...).
 		PlaceholderFormat(squirrel.Dollar).
@@ -63,8 +66,8 @@ func (r *Repo) InsertFontankaNews(ctx context.Context, news domain.FontankaNews)
 	return nil
 }
 
-func (r *Repo) GetFontankaNews() ([]dao.FontankaNews, error) {
-	const op = "repositories.get_fontanka_news"
+func (r *Repo) GetHTNews() ([]dao.HTNews, error) {
+	const op = "repositories.get_ht_news"
 
 	return nil, nil
 }
@@ -108,7 +111,7 @@ func (r *Repo) InsertHabrNews(ctx context.Context, news domain.HabrNews) error {
 	return nil
 }
 
-func (r *Repo) GetHabrNews() ([]dao.FontankaNews, error) {
+func (r *Repo) GetHabrNews() ([]dao.HTNews, error) {
 	const op = "repositories.get_habr_news"
 
 	return nil, nil

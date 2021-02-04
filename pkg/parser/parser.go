@@ -7,12 +7,11 @@ import (
 	"github.com/geziyor/geziyor"
 	"github.com/geziyor/geziyor/client"
 	"github.com/geziyor/geziyor/export"
-	"regexp"
 )
 
 const (
-	habr     = "https://habr.com/ru/top/"
-	fontanka = "https://www.fontanka.ru/"
+	habr   = "https://habr.com/ru/top/"
+	htNews = "https://hi-tech.news/"
 )
 
 type Parser struct {
@@ -33,11 +32,11 @@ func (p *Parser) StartParseHabr(exporter export.Exporter) {
 	}).Start()
 }
 
-func (p *Parser) StartParseFontanka(exporter export.Exporter) {
+func (p *Parser) StartParseHTNews(exporter export.Exporter) {
 	geziyor.NewGeziyor(&geziyor.Options{
-		StartURLs: []string{fontanka},
-		ParseFunc: p.parseFontanka,
-		Exporters: []export.Exporter{&export.PrettyPrint{}},
+		StartURLs: []string{htNews},
+		ParseFunc: p.parseHTNews,
+		Exporters: []export.Exporter{exporter},
 	}).Start()
 }
 
@@ -65,27 +64,21 @@ func (p *Parser) parseHabr(g *geziyor.Geziyor, r *client.Response) {
 	})
 }
 
-func (p *Parser) parseFontanka(g *geziyor.Geziyor, r *client.Response) {
-	r.HTMLDoc.Find(".HFa1").Each(func(i int, s *goquery.Selection) {
+func (p *Parser) parseHTNews(g *geziyor.Geziyor, r *client.Response) {
+	r.HTMLDoc.Find(".post-body").Each(func(i int, s *goquery.Selection) {
 		var (
 			link string
 			ok   bool
 		)
-		if link, ok = s.Find(".HFd-").Attr("href"); !ok {
+		if link, ok = s.Find(".post-title-a").Attr("href"); !ok {
 			p.log.Error("Cannot parse link")
-		} else {
-			match, err := regexp.MatchString("http", link)
-			if err == nil && !match {
-				link = "https://www.fontanka.ru/" + link
-			} else if err != nil {
-				p.log.Error("cannot parse link by regexp")
-			}
 		}
 
-		g.Exports <- map[string]interface{}{
-			"title":            s.Find(".HFd-").Text(),
-			"publication_date": s.Find(".HFyn").Text(),
-			"link":             link,
+		g.Exports <- domain.HTNews{
+			Category:        s.Find(".post-media-category").Text(),
+			Title:           s.Find(".post-title-a").Text(),
+			Preview:         s.Find(".the-excerpt").Text(),
+			Link:            link,
 		}
 	})
 }

@@ -1,12 +1,10 @@
 -- +goose Up
-CREATE TABLE habr_news
+CREATE TABLE ht_news
 (
     "id"               uuid      NOT NULL,
-    "author"           text,
-    "author_link"      text,
+    "category"         text,
     "title"            text,
     "preview"          text,
-    "views"            text,
     "publication_date" text,
     "link"             text,
     "created_at"       timestamp NOT NULL DEFAULT now(),
@@ -14,4 +12,4 @@ CREATE TABLE habr_news
 );
 
 -- +goose Down
-DROP TABLE habr_news;
+DROP TABLE ht_news;

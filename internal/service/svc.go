@@ -37,16 +37,16 @@ func (s *Service) GetHabrNews(ctx context.Context) ([]domain.HabrNews, error) {
 	return nil, nil
 }
 
-func (s *Service) InsertFontankaNews(ctx context.Context) error {
-	const op = "services.insert_fontanka_news"
+func (s *Service) InsertHTNews(ctx context.Context) error {
+	const op = "services.insert_ht_news"
 
-	s.parser.StartParseFontanka(NewFontankaExporter(s.repo))
+	s.parser.StartParseHTNews(NewHTNewsExporter(s.repo))
 
 	return nil
 }
 
-func (s *Service) GetFontankaNews(ctx context.Context) ([]domain.FontankaNews, error) {
-	const op = "services.get_fontanka_news"
+func (s *Service) GetHTNews(ctx context.Context) ([]domain.HTNews, error) {
+	const op = "services.get_ht_news"
 
 	return nil, nil
 }
