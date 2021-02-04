@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type FontankaNews struct {
+type HTNews struct {
 	ID              string    `db:"id"`
 	Title           string    `db:"title"`
 	PublicationDate string    `db:"publication_date"`
@@ -12,16 +12,7 @@ type FontankaNews struct {
 	CreatedAt       time.Time `db:"created_at"`
 }
 
-func (f *FontankaNews) InsertColumns() []string {
-	return []string{
-		"title",
-		"publication_date",
-		"link",
-		"created_at",
-	}
-}
-
-func (f *FontankaNews) Columns() []string {
+func (ht *HTNews) InsertColumns() []string {
 	return []string{
 		"id",
 		"title",
@@ -31,22 +22,32 @@ func (f *FontankaNews) Columns() []string {
 	}
 }
 
-func (f *FontankaNews) Values() []interface{} {
-	return []interface{}{
-		f.ID,
-		f.Title,
-		f.PublicationDate,
-		f.Link,
-		f.CreatedAt,
+func (ht *HTNews) Columns() []string {
+	return []string{
+		"id",
+		"title",
+		"publication_date",
+		"link",
+		"created_at",
 	}
 }
 
-func (f *FontankaNews) ScanValues() []interface{} {
+func (ht *HTNews) Values() []interface{} {
 	return []interface{}{
-		&f.ID,
-		&f.Title,
-		&f.PublicationDate,
-		&f.Link,
-		&f.CreatedAt,
+		ht.ID,
+		ht.Title,
+		ht.PublicationDate,
+		ht.Link,
+		ht.CreatedAt,
+	}
+}
+
+func (ht *HTNews) ScanValues() []interface{} {
+	return []interface{}{
+		&ht.ID,
+		&ht.Title,
+		&ht.PublicationDate,
+		&ht.Link,
+		&ht.CreatedAt,
 	}
 }

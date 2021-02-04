@@ -7,24 +7,25 @@ import (
 	"log"
 )
 
-type FontankaExporter struct {
+type HTNewsExporter struct {
 	repo *repository.Repo
 }
 
-func NewFontankaExporter(repo *repository.Repo) *FontankaExporter {
-	return &FontankaExporter{
+func NewHTNewsExporter(repo *repository.Repo) *HTNewsExporter {
+	return &HTNewsExporter{
 		repo: repo,
 	}
 }
 
-func (fe *FontankaExporter) Export(exports chan interface{}) {
+func (ht *HTNewsExporter) Export(exports chan interface{}) {
 	const op = "services.export"
 	for data := range exports {
-		news, ok := data.(domain.FontankaNews)
+		news, ok := data.(domain.HTNews)
+		log.Println(op, news)
 		if !ok {
 
 		}
-		err := fe.repo.InsertFontankaNews(context.Background(), news)
+		err := ht.repo.InsertHTNews(context.Background(), news)
 		if err != nil {
 			log.Println(op, err)
 		}
