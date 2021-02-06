@@ -1,4 +1,4 @@
-package service
+package services
 
 import (
 	"context"
@@ -25,7 +25,7 @@ func NewService(repo *repository.Repo, parser *parser.Parser, log *logger.Logger
 }
 
 func (s *Service) InsertHabrNews(ctx context.Context) error {
-	const op = "services.insert_habr_news"
+	const op = "services.InsertHabrNews"
 
 	s.parser.StartParseHabr(exporters.NewHabrExporter(s.repo))
 
@@ -34,7 +34,7 @@ func (s *Service) InsertHabrNews(ctx context.Context) error {
 }
 
 func (s *Service) GetHabrNews(ctx context.Context, limit uint64, offset uint64) (result []models.HabrNews, err error) {
-	const op = "services.get_habr_news"
+	const op = "services.GetHabrNews"
 
 	resultRepo, err := s.repo.GetHabrNews(ctx, limit, offset)
 	if err != nil {
@@ -59,30 +59,25 @@ func (s *Service) GetHabrNews(ctx context.Context, limit uint64, offset uint64) 
 	return result, nil
 }
 
-func (s *Service) InsertHTNews(ctx context.Context) error {
-	const op = "services.insert_ht_news"
+func (s *Service) SearchHabrNews(ctx context.Context, title string) (result []models.HabrNews, err error) {
+	const op = "services.SearchHabrNews"
 
-	s.parser.StartParseHTNews(exporters.NewHTNewsExporter(s.repo))
-
-	return nil
-}
-
-func (s *Service) GetHTNews(ctx context.Context, limit uint64, offset uint64) (result []models.HTNews, err error) {
-	const op = "services.get_ht_news"
-
-	resultRepo, err := s.repo.GetHTNews(ctx, limit, offset)
+	resultRepo, err := s.repo.SearchHabrNews(ctx, title)
 	if err != nil {
 		return nil, errors.Wrap(err, op)
 	}
 
 	for _, rr := range resultRepo {
-		r := models.HTNews{
-			ID:        rr.ID,
-			Category:  rr.Category,
-			Title:     rr.Title,
-			Preview:   rr.Preview,
-			Link:      rr.Link,
-			CreatedAt: rr.CreatedAt,
+		r := models.HabrNews{
+			ID:              rr.ID,
+			Author:          rr.Author,
+			AuthorLink:      rr.AuthorLink,
+			Title:           rr.Title,
+			Preview:         rr.Preview,
+			Views:           rr.Views,
+			PublicationDate: rr.PublicationDate,
+			Link:            rr.Link,
+			CreatedAt:       rr.CreatedAt,
 		}
 		result = append(result, r)
 	}

@@ -21,6 +21,10 @@ https://www.getpostman.com/collections/-
 
 ### GET /ht_news?limit=3&offset=1
 
+### GET /habr/search?title=Как
+
+### GET /hi_tech_news/search?title=COVID
+
 ### GET /health
 
 Liveness probe для проверки соединения с бд. Отправляет 500 status code, если нет связи с бд.   

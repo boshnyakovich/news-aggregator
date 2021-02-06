@@ -39,3 +39,21 @@ func (h *Handlers) GetHabrNews(ctx *fasthttp.RequestCtx) {
 
 	decorateResponse(ctx, statusCode, news, "")
 }
+
+func (h *Handlers) SearchHabrNews(ctx *fasthttp.RequestCtx) {
+	var errorMessage string
+	statusCode := 200
+
+	title := getTitle(ctx)
+
+	news, err := h.service.SearchHabrNews(ctx, title)
+	if err != nil {
+		statusCode, errorMessage = 500, fmt.Sprintf("error search habr news from storage by title")
+
+		h.log.Errorf("error search habr news from storage by title: %s: %s", title, err)
+		decorateResponse(ctx, statusCode, nil, errorMessage)
+		return
+	}
+
+	decorateResponse(ctx, statusCode, news, "")
+}

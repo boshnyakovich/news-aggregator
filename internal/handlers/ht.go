@@ -22,7 +22,7 @@ func (h *Handlers) InsertHTNews(ctx *fasthttp.RequestCtx) {
 
 }
 
-func (h *Handlers) GetHTNewsNews(ctx *fasthttp.RequestCtx) {
+func (h *Handlers) GetHTNews(ctx *fasthttp.RequestCtx) {
 	var errorMessage string
 	statusCode := 200
 
@@ -40,4 +40,22 @@ func (h *Handlers) GetHTNewsNews(ctx *fasthttp.RequestCtx) {
 
 	decorateResponse(ctx, statusCode, news, "")
 
+}
+
+func (h *Handlers) SearchHTNews(ctx *fasthttp.RequestCtx) {
+	var errorMessage string
+	statusCode := 200
+
+	title := getTitle(ctx)
+
+	news, err := h.service.SearchHTNews(ctx, title)
+	if err != nil {
+		statusCode, errorMessage = 500, fmt.Sprintf("error getting ht news from storage")
+
+		h.log.Errorf("error search ht news from storage by title: %s: %s", title, err)
+		decorateResponse(ctx, statusCode, nil, errorMessage)
+		return
+	}
+
+	decorateResponse(ctx, statusCode, news, "")
 }

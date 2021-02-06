@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
-	"github.com/boshnyakovich/news-aggregator/internal/service"
+	"github.com/boshnyakovich/news-aggregator/internal/services"
 	"github.com/boshnyakovich/news-aggregator/pkg/logger"
 	"github.com/jmoiron/sqlx"
 	"github.com/valyala/fasthttp"
@@ -10,12 +10,12 @@ import (
 )
 
 type Handlers struct {
-	service *service.Service
+	service *services.Service
 	db      *sqlx.DB
 	log     *logger.Logger
 }
 
-func NewHandlers(service *service.Service, db *sqlx.DB, log *logger.Logger) *Handlers {
+func NewHandlers(service *services.Service, db *sqlx.DB, log *logger.Logger) *Handlers {
 	return &Handlers{
 		service: service,
 		db:      db,
@@ -59,3 +59,6 @@ func getLimitOffset(ctx *fasthttp.RequestCtx) (uint64, uint64) {
 	return uint64(ctx.QueryArgs().GetUintOrZero("limit")), uint64(ctx.QueryArgs().GetUintOrZero("offset"))
 }
 
+func getTitle(ctx *fasthttp.RequestCtx) string {
+	return string(ctx.QueryArgs().Peek("title"))
+}

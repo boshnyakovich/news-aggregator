@@ -27,7 +27,7 @@ func NewRepo(db *sqlx.DB, log *logger.Logger) *Repo {
 const habrTableName = "habr_news"
 
 func (r *Repo) InsertHabrNews(ctx context.Context, news models.HabrNews) error {
-	const op = "repositories.insert_habr_news"
+	const op = "repositories.InsertHabrNews"
 
 	var hn repository.HabrNews
 	id, err := uuid.NewV4()
@@ -66,7 +66,7 @@ func (r *Repo) InsertHabrNews(ctx context.Context, news models.HabrNews) error {
 }
 
 func (r *Repo) GetHabrNews(ctx context.Context, limit uint64, offset uint64) (result []repository.HabrNews, err error) {
-	const op = "repositories.get_habr_news"
+	const op = "repositories.GetHabrNews"
 
 	var habrRepo repository.HabrNews
 
@@ -111,6 +111,37 @@ func (r *Repo) GetHabrNews(ctx context.Context, limit uint64, offset uint64) (re
 			&hn.CreatedAt,
 		); err != nil {
 			r.log.Errorf("error getting habr news list from db: %s", err)
+		}
+		result = append(result, hn)
+	}
+
+	return result, nil
+}
+
+func (r *Repo) SearchHabrNews(ctx context.Context, title string) (result []repository.HabrNews, err error) {
+	const op = "repositories.SearchHabrNews"
+
+	sql := "SELECT * FROM habr_news WHERE title similar to $1"
+
+	rows, err := r.db.QueryContext(ctx, sql, "%" + title + "%")
+	if err != nil {
+		return nil, errors.Wrap(err, op)
+	}
+
+	for rows.Next() {
+		hn := repository.HabrNews{}
+		if err = rows.Scan(
+			&hn.ID,
+			&hn.Author,
+			&hn.AuthorLink,
+			&hn.Title,
+			&hn.Preview,
+			&hn.Views,
+			&hn.PublicationDate,
+			&hn.Link,
+			&hn.CreatedAt,
+		); err != nil {
+			r.log.Errorf("error getting habr news by title from db: %s", err)
 		}
 		result = append(result, hn)
 	}
