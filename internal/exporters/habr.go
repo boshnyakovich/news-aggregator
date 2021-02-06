@@ -2,7 +2,7 @@ package exporters
 
 import (
 	"context"
-	"github.com/boshnyakovich/news-aggregator/internal/models/domain"
+	"github.com/boshnyakovich/news-aggregator/internal/models"
 	"github.com/boshnyakovich/news-aggregator/internal/repository"
 	"log"
 )
@@ -20,7 +20,7 @@ func NewHabrExporter(repo *repository.Repo) *HabrExporter {
 func (he *HabrExporter) Export(exports chan interface{}) {
 	const op = "services.export"
 	for data := range exports {
-		news, ok := data.(domain.HabrNews)
+		news, ok := data.(models.HabrNews)
 		if !ok {
 
 		}

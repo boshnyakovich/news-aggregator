@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"github.com/boshnyakovich/news-aggregator/internal/exporters"
-	"github.com/boshnyakovich/news-aggregator/internal/models/domain"
+	"github.com/boshnyakovich/news-aggregator/internal/models"
 	"github.com/boshnyakovich/news-aggregator/internal/repository"
 	"github.com/boshnyakovich/news-aggregator/pkg/logger"
 	"github.com/boshnyakovich/news-aggregator/pkg/parser"
@@ -33,7 +33,7 @@ func (s *Service) InsertHabrNews(ctx context.Context) error {
 
 }
 
-func (s *Service) GetHabrNews(ctx context.Context, limit uint64, offset uint64) (result []domain.HabrNews, err error) {
+func (s *Service) GetHabrNews(ctx context.Context, limit uint64, offset uint64) (result []models.HabrNews, err error) {
 	const op = "services.get_habr_news"
 
 	resultRepo, err := s.repo.GetHabrNews(ctx, limit, offset)
@@ -42,7 +42,7 @@ func (s *Service) GetHabrNews(ctx context.Context, limit uint64, offset uint64) 
 	}
 
 	for _, rr := range resultRepo {
-		r := domain.HabrNews{
+		r := models.HabrNews{
 			ID:              rr.ID,
 			Author:          rr.Author,
 			AuthorLink:      rr.AuthorLink,
@@ -67,7 +67,7 @@ func (s *Service) InsertHTNews(ctx context.Context) error {
 	return nil
 }
 
-func (s *Service) GetHTNews(ctx context.Context, limit uint64, offset uint64) (result []domain.HTNews, err error) {
+func (s *Service) GetHTNews(ctx context.Context, limit uint64, offset uint64) (result []models.HTNews, err error) {
 	const op = "services.get_ht_news"
 
 	resultRepo, err := s.repo.GetHTNews(ctx, limit, offset)
@@ -76,7 +76,7 @@ func (s *Service) GetHTNews(ctx context.Context, limit uint64, offset uint64) (r
 	}
 
 	for _, rr := range resultRepo {
-		r := domain.HTNews{
+		r := models.HTNews{
 			ID:        rr.ID,
 			Category:  rr.Category,
 			Title:     rr.Title,

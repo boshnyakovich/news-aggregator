@@ -2,7 +2,7 @@ package parser
 
 import (
 	"github.com/PuerkitoBio/goquery"
-	"github.com/boshnyakovich/news-aggregator/internal/models/domain"
+	"github.com/boshnyakovich/news-aggregator/internal/models"
 	"github.com/boshnyakovich/news-aggregator/pkg/logger"
 	"github.com/geziyor/geziyor"
 	"github.com/geziyor/geziyor/client"
@@ -58,7 +58,7 @@ func (p *Parser) parseHabr(g *geziyor.Geziyor, r *client.Response) {
 			p.log.Error("Cannot parse author link")
 		}
 
-		g.Exports <- domain.HabrNews{
+		g.Exports <- models.HabrNews{
 			Author:          s.Find(".user-info__nickname_small").Text(),
 			AuthorLink:      authorLink,
 			Title:           s.Find(".post__title_link").Text(),
@@ -86,7 +86,7 @@ func (p *Parser) parseHTNews(g *geziyor.Geziyor, r *client.Response) {
 			p.log.Error("Cannot parse link")
 		}
 		log.Println(2)
-		g.Exports <- domain.HTNews{
+		g.Exports <- models.HTNews{
 			Category: s.Find(".post-media-category").Text(),
 			Title:    s.Find(".post-title-a").Text(),
 			Preview:  s.Find(".the-excerpt").Text(),

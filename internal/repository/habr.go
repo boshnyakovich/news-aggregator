@@ -3,8 +3,8 @@ package repository
 import (
 	"context"
 	"github.com/Masterminds/squirrel"
-	"github.com/boshnyakovich/news-aggregator/internal/models/dao"
-	"github.com/boshnyakovich/news-aggregator/internal/models/domain"
+	"github.com/boshnyakovich/news-aggregator/internal/models"
+	"github.com/boshnyakovich/news-aggregator/internal/repository/models"
 	"github.com/boshnyakovich/news-aggregator/pkg/logger"
 	"github.com/gofrs/uuid"
 	"github.com/jmoiron/sqlx"
@@ -26,10 +26,10 @@ func NewRepo(db *sqlx.DB, log *logger.Logger) *Repo {
 
 const habrTableName = "habr_news"
 
-func (r *Repo) InsertHabrNews(ctx context.Context, news domain.HabrNews) error {
+func (r *Repo) InsertHabrNews(ctx context.Context, news models.HabrNews) error {
 	const op = "repositories.insert_habr_news"
 
-	var hn dao.HabrNews
+	var hn repository.HabrNews
 	id, err := uuid.NewV4()
 	if err != nil {
 		return errors.Wrap(err, op)
@@ -65,10 +65,10 @@ func (r *Repo) InsertHabrNews(ctx context.Context, news domain.HabrNews) error {
 	return nil
 }
 
-func (r *Repo) GetHabrNews(ctx context.Context, limit uint64, offset uint64) (result []dao.HabrNews, err error) {
+func (r *Repo) GetHabrNews(ctx context.Context, limit uint64, offset uint64) (result []repository.HabrNews, err error) {
 	const op = "repositories.get_habr_news"
 
-	var habrRepo dao.HabrNews
+	var habrRepo repository.HabrNews
 
 	columns := habrRepo.Columns()
 
@@ -98,7 +98,7 @@ func (r *Repo) GetHabrNews(ctx context.Context, limit uint64, offset uint64) (re
 	}
 
 	for rows.Next() {
-		hn := dao.HabrNews{}
+		hn := repository.HabrNews{}
 		if err = rows.Scan(
 			&hn.ID,
 			&hn.Author,

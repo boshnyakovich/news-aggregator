@@ -3,8 +3,8 @@ package repository
 import (
 	"context"
 	"github.com/Masterminds/squirrel"
-	"github.com/boshnyakovich/news-aggregator/internal/models/domain"
-	"github.com/boshnyakovich/news-aggregator/internal/models/dao"
+	"github.com/boshnyakovich/news-aggregator/internal/models"
+	"github.com/boshnyakovich/news-aggregator/internal/repository/models"
 	"github.com/gofrs/uuid"
 	"github.com/pkg/errors"
 	"time"
@@ -12,9 +12,9 @@ import (
 
 const htTableName   = "ht_news"
 
-func (r *Repo) InsertHTNews(ctx context.Context, news domain.HTNews) error {
+func (r *Repo) InsertHTNews(ctx context.Context, news models.HTNews) error {
 	const op = "repositories.insert_ht_news"
-	var ht dao.HTNews
+	var ht repository.HTNews
 	id, err := uuid.NewV4()
 	if err != nil {
 		return errors.Wrap(err, op)
@@ -45,10 +45,10 @@ func (r *Repo) InsertHTNews(ctx context.Context, news domain.HTNews) error {
 	return nil
 }
 
-func (r *Repo) GetHTNews(ctx context.Context, limit uint64, offset uint64) (result []dao.HTNews, err error) {
+func (r *Repo) GetHTNews(ctx context.Context, limit uint64, offset uint64) (result []repository.HTNews, err error) {
 	const op = "repositories.get_ht_news"
 
-	var htRepo dao.HTNews
+	var htRepo repository.HTNews
 
 	columns := htRepo.Columns()
 
@@ -78,7 +78,7 @@ func (r *Repo) GetHTNews(ctx context.Context, limit uint64, offset uint64) (resu
 	}
 
 	for rows.Next() {
-		hn := dao.HTNews{}
+		hn := repository.HTNews{}
 		if err = rows.Scan(
 			&hn.ID,
 			&hn.Category,
