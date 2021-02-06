@@ -2,29 +2,26 @@ package handlers
 
 import (
 	"encoding/json"
-	"github.com/boshnyakovich/news-aggregator/internal/services"
 	"github.com/boshnyakovich/news-aggregator/pkg/logger"
 	"github.com/jmoiron/sqlx"
 	"github.com/valyala/fasthttp"
 	"log"
 )
 
-type Handlers struct {
-	service *services.Service
-	db      *sqlx.DB
-	log     *logger.Logger
+type AlivenessHandler struct {
+	db  *sqlx.DB
+	log *logger.Logger
 }
 
-func NewHandlers(service *services.Service, db *sqlx.DB, log *logger.Logger) *Handlers {
-	return &Handlers{
-		service: service,
-		db:      db,
-		log:     log,
+func NewAlivenessHandler(db *sqlx.DB, log *logger.Logger) *AlivenessHandler {
+	return &AlivenessHandler{
+		db:  db,
+		log: log,
 	}
 }
 
-func (h *Handlers) LivenessHandler(ctx *fasthttp.RequestCtx) {
-	if err := h.db.Ping(); err != nil {
+func (ah *AlivenessHandler) Alive(ctx *fasthttp.RequestCtx) {
+	if err := ah.db.Ping(); err != nil {
 		ctx.Response.SetStatusCode(500)
 	}
 	decorateResponse(ctx, 200, "Alive!", "")
@@ -35,7 +32,7 @@ type response struct {
 	Error string      `json:"error,omitempty"`
 }
 
-var responseInfo struct{
+var responseInfo struct {
 	Message string `json:"message"`
 }
 

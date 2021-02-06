@@ -11,34 +11,34 @@ import (
 
 const habr = "https://habr.com/ru/top/"
 
-type Parser struct {
+type HabrParser struct {
 	log *logger.Logger
 }
 
-func NewParser(log *logger.Logger) *Parser {
-	return &Parser{
+func NewHabrParser(log *logger.Logger) *HabrParser {
+	return &HabrParser{
 		log: log,
 	}
 }
 
-func (p *Parser) StartParseHabr(exporter export.Exporter) {
+func (hp *HabrParser) Start(exporter export.Exporter) {
 	geziyor.NewGeziyor(&geziyor.Options{
 		StartURLs: []string{habr},
-		ParseFunc: p.parseHabr,
+		ParseFunc: hp.parse,
 		Exporters: []export.Exporter{exporter},
 	}).Start()
 }
 
-func (p *Parser) parseHabr(g *geziyor.Geziyor, r *client.Response) {
+func (hp *HabrParser) parse(g *geziyor.Geziyor, r *client.Response) {
 	r.HTMLDoc.Find(".post").Each(func(i int, s *goquery.Selection) {
 		link, ok := s.Find(".post__title_link").Attr("href")
 		if !ok {
-			p.log.Error("Cannot parse link")
+			hp.log.Error("cannot parse link")
 		}
 
 		authorLink, ok := s.Find(".post__user-info.user-info").Attr("href")
 		if !ok {
-			p.log.Error("Cannot parse author link")
+			hp.log.Error("cannot parse author link")
 		}
 
 		g.Exports <- models.HabrNews{

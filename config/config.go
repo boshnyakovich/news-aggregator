@@ -17,7 +17,7 @@ type HTTPConfig struct {
 type Database struct {
 	User        string        `env:"DB_USER" envDefault:"test"`
 	Pass        string        `env:"DB_PASS" envDefault:"test"`
-	Host        string        `env:"DB_HOST" envDefault:"localhost"`
+	Host        string        `env:"DB_HOST" envDefault:"database"`
 	Port        uint          `env:"DB_PORT" envDefault:"8086"`
 	Name        string        `env:"DB_NAME" envDefault:"news-db"`
 	MaxConns    int           `env:"DB_MAX_CONNS"`

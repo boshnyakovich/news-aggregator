@@ -3,6 +3,7 @@ package parser
 import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/boshnyakovich/news-aggregator/internal/models"
+	"github.com/boshnyakovich/news-aggregator/pkg/logger"
 	"github.com/geziyor/geziyor"
 	"github.com/geziyor/geziyor/client"
 	"github.com/geziyor/geziyor/export"
@@ -10,23 +11,32 @@ import (
 
 const htNews = "https://hi-tech.news/"
 
-func (p *Parser) StartParseHTNews(exporter export.Exporter) {
-	geziyor.NewGeziyor(&geziyor.Options{
-		StartURLs: []string{htNews},
-		ParseFunc: p.parseHTNews,
-		Exporters: []export.Exporter{exporter},
-	}).Start()
-
+type HTParser struct {
+	log *logger.Logger
 }
 
-func (p *Parser) parseHTNews(g *geziyor.Geziyor, r *client.Response) {
+func NewHTParser(log *logger.Logger) *HTParser {
+	return &HTParser{
+		log: log,
+	}
+}
+
+func (ht *HTParser) Start(exporter export.Exporter) {
+	geziyor.NewGeziyor(&geziyor.Options{
+		StartURLs: []string{htNews},
+		ParseFunc: ht.parse,
+		Exporters: []export.Exporter{exporter},
+	}).Start()
+}
+
+func (ht *HTParser) parse(g *geziyor.Geziyor, r *client.Response) {
 	r.HTMLDoc.Find(".post-body").Each(func(i int, s *goquery.Selection) {
 		var (
 			link string
 			ok   bool
 		)
 		if link, ok = s.Find(".post-title-a").Attr("href"); !ok {
-			p.log.Error("Cannot parse link")
+			ht.log.Error("cannot parse link")
 		}
 
 		g.Exports <- models.HTNews{

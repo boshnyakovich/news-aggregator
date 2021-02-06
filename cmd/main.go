@@ -6,7 +6,6 @@ import (
 	"github.com/boshnyakovich/news-aggregator/config"
 	"github.com/boshnyakovich/news-aggregator/internal/handlers"
 	"github.com/boshnyakovich/news-aggregator/internal/repository"
-	"github.com/boshnyakovich/news-aggregator/internal/services"
 	"github.com/boshnyakovich/news-aggregator/pkg/fasthttpserver"
 	"github.com/boshnyakovich/news-aggregator/pkg/logger"
 	"github.com/boshnyakovich/news-aggregator/pkg/parser"
@@ -50,9 +49,13 @@ func main() {
 	defer db.Close()
 
 	repo := repository.NewRepo(db, log)
-	parser := parser.NewParser(log)
-	service := services.NewService(repo, parser, log)
-	handlers := handlers.NewHandlers(service, db, log)
+	habrParser := parser.NewHabrParser(log)
+	habrHandlers := handlers.NewHabrHandlers(repo, habrParser, log)
+
+	htParser := parser.NewHTParser(log)
+	htHandlers := handlers.NewHTHandlers(repo, htParser, log)
+
+	alivenessHandler := handlers.NewAlivenessHandler(db, log)
 
 	server, err := fasthttpserver.New().
 		WithConfig(&fasthttpserver.Config{
@@ -60,19 +63,19 @@ func main() {
 			WriteBufferSize: 4 * 1024,
 			Addr:            fmt.Sprintf(":%d", conf.HTTPConfig.Port),
 		}).
-		WithLivenessHandler("/health", handlers.LivenessHandler).
+		WithLivenessHandler("/health", alivenessHandler.Alive).
 		Build()
 	if err != nil {
 		log.Fatalf("error while init server: %v \n", err)
 	}
 
-	server.Router().POST("/habr", handlers.InsertHabrNews)
-	server.Router().GET("/habr", handlers.GetHabrNews)
-	server.Router().GET("/habr/search", handlers.SearchHabrNews)
+	server.Router().POST("/habr", habrHandlers.Insert)
+	server.Router().GET("/habr", habrHandlers.Get)
+	server.Router().GET("/habr/search", habrHandlers.Search)
 
-	server.Router().POST("/hi_tech_news", handlers.InsertHTNews)
-	server.Router().GET("/hi_tech_news", handlers.GetHTNews)
-	server.Router().GET("/hi_tech_news/search", handlers.SearchHTNews)
+	server.Router().POST("/hi_tech_news", htHandlers.Insert)
+	server.Router().GET("/hi_tech_news", htHandlers.Get)
+	server.Router().GET("/hi_tech_news/search", htHandlers.Search)
 
 	wg := &sync.WaitGroup{}
 	wg.Add(2)
