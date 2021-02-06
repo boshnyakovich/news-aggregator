@@ -2,6 +2,11 @@ package models
 
 import "time"
 
+type HTCriteria struct {
+	Category string `json:"category"`
+	Page     int    `json:"page"`
+}
+
 type HTNews struct {
 	ID        string    `json:"id" db:"id"`
 	Category  string    `json:"category" db:"category"`

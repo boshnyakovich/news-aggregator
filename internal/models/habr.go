@@ -2,6 +2,14 @@ package models
 
 import "time"
 
+type HabrCriteria struct {
+	Articles bool   `json:"articles"`
+	All      bool   `json:"all"`
+	Rating   uint64 `json:"rating,omitempty"`
+	Best     bool   `json:"best"`
+	Period   string `json:"period,omitempty"`
+}
+
 type HabrNews struct {
 	ID              string    `json:"id" db:"id"`
 	Author          string    `json:"author" db:"author"`
