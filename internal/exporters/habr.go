@@ -18,7 +18,7 @@ func NewHabrExporter(repo *repository.Repo) *HabrExporter {
 }
 
 func (he *HabrExporter) Export(exports chan interface{}) {
-	const op = "exporters.export"
+	const op = "exporters.habr.export"
 
 	for data := range exports {
 		news, ok := data.(models.HabrNews)

@@ -18,7 +18,7 @@ func NewHTNewsExporter(repo *repository.Repo) *HTNewsExporter {
 }
 
 func (ht *HTNewsExporter) Export(exports chan interface{}) {
-	const op = "services.export"
+	const op = "exporters.ht.export"
 	for data := range exports {
 		news, ok := data.(models.HTNews)
 		if !ok {

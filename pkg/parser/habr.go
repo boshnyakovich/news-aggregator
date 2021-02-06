@@ -9,7 +9,7 @@ import (
 	"github.com/geziyor/geziyor/export"
 )
 
-const habr = "https://habr.com/ru/top/"
+const habr = "https://habr.com/ru/news/"
 
 type HabrParser struct {
 	log *logger.Logger
