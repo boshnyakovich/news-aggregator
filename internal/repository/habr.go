@@ -9,6 +9,7 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
+	"strings"
 	"time"
 )
 
@@ -34,12 +35,16 @@ func (r *Repo) InsertHabrNews(ctx context.Context, news models.HabrNews) error {
 	if err != nil {
 		return errors.Wrap(err, op)
 	}
-
 	hn.ID = id.String()
+
+	preview := news.Preview
+	preview = strings.Replace(preview, "\n", "", -1)
+	preview = strings.Replace(preview, "<br>", "", -1)
+	hn.Preview = preview
+
 	hn.Author = news.Author
 	hn.AuthorLink = news.AuthorLink
 	hn.Title = news.Title
-	hn.Preview = news.Preview
 	hn.Views = news.Views
 	hn.PublicationDate = news.PublicationDate
 	hn.Link = news.Link

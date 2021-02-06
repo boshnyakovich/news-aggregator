@@ -15,13 +15,13 @@ https://www.getpostman.com/collections/-
 
 ### POST /habr
 
-### POST /ht_news
-
 ### GET /habr?limit=3&offset=1
 
-### GET /ht_news?limit=3&offset=1
-
 ### GET /habr/search?title=Как
+
+### POST /ht_news
+
+### GET /ht_news?limit=3&offset=1
 
 ### GET /hi_tech_news/search?title=COVID
 
