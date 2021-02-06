@@ -54,11 +54,11 @@ best      | bool      | лучшие статьи. работает если art
 `         | true      |        
 `         | false     |                                                      
 period    | string    | период в топе
-`         | "day"     | сутки
-`         | "week"    | неделя 
-`         | "month"   | месяц
-`         | "year"    | год 
-`         | empty     | выведется за сутки   
+          | "day"     | сутки
+          | "week"    | неделя 
+          | "month"   | месяц
+          | "year"    | год 
+          | empty     | выведется за сутки   
 
 **Return values**  
 ```json
