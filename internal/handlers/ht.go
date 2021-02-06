@@ -18,14 +18,13 @@ func (h *Handlers) InsertHTNews(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	decorateResponse(ctx, statusCode, nil, "")
-
+	responseInfo.Message = "Hi-tech's site data was parsed and saved"
+	decorateResponse(ctx, statusCode, responseInfo, "")
 }
 
 func (h *Handlers) GetHTNews(ctx *fasthttp.RequestCtx) {
 	var errorMessage string
 	statusCode := 200
-
 
 	limit, offset := getLimitOffset(ctx)
 

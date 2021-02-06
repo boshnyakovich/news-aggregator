@@ -62,10 +62,11 @@ func (r *Repo) InsertHabrNews(ctx context.Context, news models.HabrNews) error {
 		return errors.Wrap(err, op)
 	}
 
-	_, err = r.db.QueryContext(ctx, sql, args...)
+	rows, err := r.db.QueryContext(ctx, sql, args...)
 	if err != nil {
 		return errors.Wrap(err, op)
 	}
+	defer rows.Close()
 
 	return nil
 }
@@ -128,7 +129,7 @@ func (r *Repo) SearchHabrNews(ctx context.Context, title string) (result []repos
 
 	sql := "SELECT * FROM habr_news WHERE title similar to $1"
 
-	rows, err := r.db.QueryContext(ctx, sql, "%" + title + "%")
+	rows, err := r.db.QueryContext(ctx, sql, "%"+title+"%")
 	if err != nil {
 		return nil, errors.Wrap(err, op)
 	}

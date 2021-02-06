@@ -18,8 +18,8 @@ func (h *Handlers) InsertHabrNews(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	decorateResponse(ctx, statusCode, nil, "")
-
+	responseInfo.Message = "Habr's site data was parsed and saved"
+	decorateResponse(ctx, statusCode, responseInfo, "")
 }
 
 func (h *Handlers) GetHabrNews(ctx *fasthttp.RequestCtx) {

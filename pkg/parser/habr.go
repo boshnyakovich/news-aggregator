@@ -7,14 +7,9 @@ import (
 	"github.com/geziyor/geziyor"
 	"github.com/geziyor/geziyor/client"
 	"github.com/geziyor/geziyor/export"
-	"log"
-	"time"
 )
 
-const (
-	habr   = "https://habr.com/ru/top/"
-	htNews = "https://hi-tech.news/"
-)
+const habr = "https://habr.com/ru/top/"
 
 type Parser struct {
 	log *logger.Logger
@@ -34,19 +29,7 @@ func (p *Parser) StartParseHabr(exporter export.Exporter) {
 	}).Start()
 }
 
-func (p *Parser) StartParseHTNews(exporter export.Exporter) {
-	geziyor.NewGeziyor(&geziyor.Options{
-		StartURLs: []string{htNews},
-		ParseFunc: p.parseHTNews,
-		Exporters: []export.Exporter{exporter},
-	}).Start()
-
-}
-
 func (p *Parser) parseHabr(g *geziyor.Geziyor, r *client.Response) {
-	// start := time.Now()
-	// i := 0
-
 	r.HTMLDoc.Find(".post").Each(func(i int, s *goquery.Selection) {
 		link, ok := s.Find(".post__title_link").Attr("href")
 		if !ok {
@@ -67,34 +50,5 @@ func (p *Parser) parseHabr(g *geziyor.Geziyor, r *client.Response) {
 			PublicationDate: s.Find(".post__time").Text(),
 			Link:            link,
 		}
-		// log.Println(i+1, time.Since(start).Minutes())
 	})
-	// log.Println(i, "AFTER:", time.Since(start).Minutes())
-}
-
-func (p *Parser) parseHTNews(g *geziyor.Geziyor, r *client.Response) {
-	start := time.Now()
-	i := 0
-
-	r.HTMLDoc.Find(".post-body").Each(func(i int, s *goquery.Selection) {
-		var (
-			link string
-			ok   bool
-		)
-		log.Println(1)
-		if link, ok = s.Find(".post-title-a").Attr("href"); !ok {
-			p.log.Error("Cannot parse link")
-		}
-		log.Println(2)
-		g.Exports <- models.HTNews{
-			Category: s.Find(".post-media-category").Text(),
-			Title:    s.Find(".post-title-a").Text(),
-			Preview:  s.Find(".the-excerpt").Text(),
-			Link:     link,
-		}
-
-		log.Println(i+1, time.Since(start).Minutes())
-	})
-
-	log.Println(i, "AFTER:", time.Since(start).Minutes())
 }

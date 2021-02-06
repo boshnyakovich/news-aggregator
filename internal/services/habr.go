@@ -30,7 +30,6 @@ func (s *Service) InsertHabrNews(ctx context.Context) error {
 	s.parser.StartParseHabr(exporters.NewHabrExporter(s.repo))
 
 	return nil
-
 }
 
 func (s *Service) GetHabrNews(ctx context.Context, limit uint64, offset uint64) (result []models.HabrNews, err error) {

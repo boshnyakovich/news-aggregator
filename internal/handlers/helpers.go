@@ -35,6 +35,10 @@ type response struct {
 	Error string      `json:"error,omitempty"`
 }
 
+var responseInfo struct{
+	Message string `json:"message"`
+}
+
 func decorateResponse(ctx *fasthttp.RequestCtx, statusCode int, data interface{}, errorMessage string) {
 	var resp response
 

@@ -38,10 +38,12 @@ func (r *Repo) InsertHTNews(ctx context.Context, news models.HTNews) error {
 	if err != nil {
 		return errors.Wrap(err, op)
 	}
-	_, err = r.db.QueryContext(ctx, sql, args...)
+	rows, err := r.db.QueryContext(ctx, sql, args...)
 	if err != nil {
 		return errors.Wrap(err, op)
 	}
+	defer rows.Close()
+
 	return nil
 }
 
