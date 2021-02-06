@@ -45,7 +45,7 @@ func (ht *HTHandlers) Insert(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	if htCriteria.Category != string(models.SMARTPHONES) && htCriteria.Category != string(models.MEDICINE) && htCriteria.Category != string(models.OTHER)  && htCriteria.Category != "" {
+	if htCriteria.Category != string(models.SMARTPHONES) && htCriteria.Category != string(models.MEDICINE) && htCriteria.Category != string(models.OTHER) && htCriteria.Category != "" {
 		statusCode, errorMessage = 400, "incorrect criteria category, try again"
 
 		fasthttpserver.NewResponseBuilder(ctx).
