@@ -9,16 +9,16 @@
 * новости и статьи сайта https://habr.com/ru/
 * новости сайта https://hi-tech.news/
 
-## ЗАПУСК
+## ЛОКАЛЬНЫЙ ЗАПУСК
 
     $ cd deployments
     $ docker compose up
 
 ## REST API
 
-Коллекцию для postman можно получить по этой ссылке:
-
-https://www.getpostman.com/collections/-
+```http request
+url: http://localhost:8086/
+```
 
 ### POST /habr
 
