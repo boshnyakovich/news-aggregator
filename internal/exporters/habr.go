@@ -23,7 +23,7 @@ func (he *HabrExporter) Export(exports chan interface{}) {
 	for data := range exports {
 		news, ok := data.(models.HabrNews)
 		if !ok {
-
+			log.Println(op, news)
 		}
 		err := he.repo.InsertHabrNews(context.Background(), news)
 		if err != nil {

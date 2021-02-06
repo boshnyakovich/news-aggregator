@@ -8,12 +8,14 @@ import (
 )
 
 type HTNewsExporter struct {
-	repo *repository.Repo
+	repo              *repository.Repo
+	categoryInRequest string
 }
 
-func NewHTNewsExporter(repo *repository.Repo) *HTNewsExporter {
+func NewHTNewsExporter(repo *repository.Repo, categoryInRequest string) *HTNewsExporter {
 	return &HTNewsExporter{
-		repo: repo,
+		repo:              repo,
+		categoryInRequest: categoryInRequest,
 	}
 }
 
@@ -22,11 +24,14 @@ func (ht *HTNewsExporter) Export(exports chan interface{}) {
 	for data := range exports {
 		news, ok := data.(models.HTNews)
 		if !ok {
-
+			log.Println(op, news)
 		}
-		err := ht.repo.InsertHTNews(context.Background(), news)
-		if err != nil {
-			log.Println(op, err)
+
+		if ht.categoryInRequest == "" || news.Category == ht.categoryInRequest {
+			err := ht.repo.InsertHTNews(context.Background(), news)
+			if err != nil {
+				log.Println(op, err)
+			}
 		}
 	}
 }

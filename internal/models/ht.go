@@ -3,8 +3,8 @@ package models
 import "time"
 
 type HTCriteria struct {
-	Category string `json:"category"`
-	Page     int    `json:"page"`
+	Category string `json:"category,omitempty"`
+	Page     uint64 `json:"page"`
 }
 
 type HTNews struct {
