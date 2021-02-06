@@ -3,6 +3,7 @@ package domain
 import "time"
 
 type HabrNews struct {
+	ID              string    `json:"id"`
 	Author          string    `json:"author"`
 	AuthorLink      string    `json:"author_link"`
 	Title           string    `json:"title"`

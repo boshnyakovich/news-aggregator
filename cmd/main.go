@@ -69,6 +69,9 @@ func main() {
 	server.Router().POST("/habr", handlers.InsertHabrNews)
 	server.Router().POST("/hi_tech_news", handlers.InsertHTNews)
 
+	server.Router().GET("/habr", handlers.GetHabrNews)
+	server.Router().GET("/hi_tech_news", handlers.GetHTNewsNews)
+
 	wg := &sync.WaitGroup{}
 	wg.Add(2)
 	go func() {

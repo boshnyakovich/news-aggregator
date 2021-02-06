@@ -1,4 +1,4 @@
-package service
+package exporters
 
 import (
 	"context"
@@ -21,7 +21,6 @@ func (ht *HTNewsExporter) Export(exports chan interface{}) {
 	const op = "services.export"
 	for data := range exports {
 		news, ok := data.(domain.HTNews)
-		log.Println(op, news)
 		if !ok {
 
 		}

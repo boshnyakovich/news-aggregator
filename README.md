@@ -13,6 +13,14 @@ Test task to the "Tochka Bank" company
 
 https://www.getpostman.com/collections/-
 
+### POST /habr
+
+### POST /ht_news
+
+### GET /habr?limit=3&offset=1
+
+### GET /ht_news?limit=3&offset=1
+
 ### GET /health
 
 Liveness probe для проверки соединения с бд. Отправляет 500 status code, если нет связи с бд.   
