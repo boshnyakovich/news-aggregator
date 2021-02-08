@@ -3,6 +3,7 @@ package fasthttpserver
 import (
 	"context"
 	"github.com/fasthttp/router"
+	"github.com/prometheus/common/log"
 	"github.com/valyala/fasthttp"
 	"github.com/valyala/fasthttp/pprofhandler"
 	"net"
@@ -24,11 +25,11 @@ func newFastHTTPServer(config *Config) (srv *FastHTTPServer) {
 		listener: config.listener,
 
 		server: &fasthttp.Server{
-			ReadBufferSize:    config.ReadBufferSize,
-			ReadTimeout:       config.ReadTimeout,
-			WriteBufferSize:   config.WriteBufferSize,
-			WriteTimeout:      config.WriteTimeout,
-			ReduceMemoryUsage: config.ReduceMemoryUsage,
+			ReadBufferSize:     config.ReadBufferSize,
+			ReadTimeout:        config.ReadTimeout,
+			WriteBufferSize:    config.WriteBufferSize,
+			WriteTimeout:       config.WriteTimeout,
+			ReduceMemoryUsage:  config.ReduceMemoryUsage,
 			MaxRequestBodySize: config.MaxRequestBodySize,
 		},
 		router: router.New(),
@@ -54,11 +55,14 @@ func (v FastHTTPServer) Address() string {
 }
 
 func (v *FastHTTPServer) Start(ctx context.Context) (err error) {
-	curCtx, _ := context.WithCancel(ctx)
+	curCtx, cancel := context.WithCancel(ctx)
 
 	go func() {
-		<- curCtx.Done()
-		v.server.Shutdown()
+		<-curCtx.Done()
+		if err := v.server.Shutdown(); err != nil {
+			log.Warn("cannot shutdown server")
+		}
+		cancel()
 	}()
 
 	if v.listener != nil {

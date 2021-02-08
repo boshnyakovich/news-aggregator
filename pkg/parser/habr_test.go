@@ -69,6 +69,6 @@ func TestHabrParser_Parse(t *testing.T) {
 func habrPageTemplate(w http.ResponseWriter, r *http.Request) {
 	var homeTemplate = template.Must(template.New("").Parse(string(readHabrFile())))
 	if err := homeTemplate.Execute(w, ""); err != nil {
-		log.Warn("cannot close rows")
+		log.Warn("cannot execute template")
 	}
 }

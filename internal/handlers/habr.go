@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/boshnyakovich/news-aggregator/internal/exporters"
 	"github.com/boshnyakovich/news-aggregator/internal/models"
 	"github.com/boshnyakovich/news-aggregator/internal/repository"
@@ -68,7 +67,7 @@ func (hh *HabrHandlers) Get(ctx *fasthttp.RequestCtx) {
 
 	news, err := hh.repo.GetHabrNews(ctx, limit, offset)
 	if err != nil {
-		statusCode, errorMessage = 500, fmt.Sprintf("error getting habr news from storage")
+		statusCode, errorMessage = 500, "error getting habr news from storage"
 
 		hh.log.Errorf("error getting habr news from storage: %s", err)
 		decorateResponse(ctx, statusCode, nil, errorMessage)
@@ -86,7 +85,7 @@ func (hh *HabrHandlers) Search(ctx *fasthttp.RequestCtx) {
 
 	news, err := hh.repo.SearchHabrNews(ctx, title)
 	if err != nil {
-		statusCode, errorMessage = 500, fmt.Sprintf("error search habr news from storage by title")
+		statusCode, errorMessage = 500, "error search habr news from storage by title"
 
 		hh.log.Errorf("error search habr news from storage by title: %s: %s", title, err)
 		decorateResponse(ctx, statusCode, nil, errorMessage)

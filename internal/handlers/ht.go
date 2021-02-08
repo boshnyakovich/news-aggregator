@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/boshnyakovich/news-aggregator/internal/exporters"
 	"github.com/boshnyakovich/news-aggregator/internal/models"
 	"github.com/boshnyakovich/news-aggregator/internal/repository"
@@ -79,7 +78,7 @@ func (ht *HTHandlers) Get(ctx *fasthttp.RequestCtx) {
 
 	news, err := ht.repo.GetHTNews(ctx, limit, offset)
 	if err != nil {
-		statusCode, errorMessage = 500, fmt.Sprintf("error getting ht-news from storage")
+		statusCode, errorMessage = 500, "error getting ht-news from storage"
 
 		ht.log.Errorf("error getting ht news from storage: %s", err)
 		decorateResponse(ctx, statusCode, nil, errorMessage)
@@ -98,7 +97,7 @@ func (ht *HTHandlers) Search(ctx *fasthttp.RequestCtx) {
 
 	news, err := ht.repo.SearchHTNews(ctx, title)
 	if err != nil {
-		statusCode, errorMessage = 500, fmt.Sprintf("error getting ht-news from storage")
+		statusCode, errorMessage = 500, "error getting ht-news from storage"
 
 		ht.log.Errorf("error search ht news from storage by title: %s: %s", title, err)
 		decorateResponse(ctx, statusCode, nil, errorMessage)
