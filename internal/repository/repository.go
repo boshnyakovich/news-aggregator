@@ -245,28 +245,9 @@ func (r *Repo) GetHTNews(ctx context.Context, limit uint64, offset uint64) (resu
 func (r *Repo) SearchHTNews(ctx context.Context, title string) (result []models.HTNews, err error) {
 	const op = "repositories.SearchHTNews"
 
-	var htRepo models.HTNews
+	sql := "SELECT * FROM " + htTableName + " WHERE title similar to $1"
 
-	columns := htRepo.Columns()
-
-	var (
-		sql  string
-		args []interface{}
-	)
-
-	sqlBuilder := squirrel.
-		Select(columns...).
-		From(htTableName).
-		Where(squirrel.ILike{"title": title}).
-		OrderBy("created_at DESC").
-		PlaceholderFormat(squirrel.Dollar)
-
-	sql, args, err = sqlBuilder.ToSql()
-	if err != nil {
-		return nil, errors.Wrap(err, op)
-	}
-
-	rows, err := r.db.QueryContext(ctx, sql, args...)
+	rows, err := r.db.QueryContext(ctx, sql, "%"+title+"%")
 	if err != nil {
 		return nil, errors.Wrap(err, op)
 	}
