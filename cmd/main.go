@@ -82,7 +82,7 @@ func main() {
 	server.Router().GET("/hi_tech_news/search", htHandlers.Search)
 
 	wg := &sync.WaitGroup{}
-	wg.Add(2)
+	wg.Add(1)
 	go func() {
 		defer wg.Done()
 		if err := server.Start(ctx); err != nil {
@@ -101,7 +101,6 @@ func main() {
 	wg.Wait()
 
 	log.Info("news-aggregator is stopped")
-
 }
 
 func initDB(conf config.Database) (*sqlx.DB, error) {
