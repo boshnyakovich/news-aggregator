@@ -134,9 +134,26 @@ func (r *Repo) GetHabrNews(ctx context.Context, limit uint64, offset uint64) (re
 func (r *Repo) SearchHabrNews(ctx context.Context, title string) (result []models.HabrNews, err error) {
 	const op = "repositories.SearchHabrNews"
 
-	sql := "SELECT * FROM habr_news WHERE title similar to $1"
+	var habrRepo models.HabrNews
+	columns := habrRepo.Columns()
 
-	rows, err := r.db.QueryContext(ctx, sql, "%"+title+"%")
+	var (
+		sql  string
+		args []interface{}
+	)
+
+	sql, args, err = squirrel.
+		Select(columns...).
+		From(habrTableName).
+		Where(squirrel.Like{"title": "%" + title + "%"}).
+		OrderBy("created_at DESC").
+		PlaceholderFormat(squirrel.Dollar).
+		ToSql()
+	if err != nil {
+		return nil, errors.Wrap(err, op)
+	}
+
+	rows, err := r.db.QueryContext(ctx, sql, args...)
 	if err != nil {
 		return nil, errors.Wrap(err, op)
 	}
@@ -255,7 +272,6 @@ func (r *Repo) SearchHTNews(ctx context.Context, title string) (result []models.
 	const op = "repositories.SearchHTNews"
 
 	var htRepo models.HTNews
-
 	columns := htRepo.Columns()
 
 	var (
@@ -263,14 +279,13 @@ func (r *Repo) SearchHTNews(ctx context.Context, title string) (result []models.
 		args []interface{}
 	)
 
-	sqlBuilder := squirrel.
+	sql, args, err = squirrel.
 		Select(columns...).
 		From(htTableName).
 		Where(squirrel.Like{"title": "%" + title + "%"}).
 		OrderBy("created_at DESC").
-		PlaceholderFormat(squirrel.Dollar)
-
-	sql, args, err = sqlBuilder.ToSql()
+		PlaceholderFormat(squirrel.Dollar).
+		ToSql()
 	if err != nil {
 		return nil, errors.Wrap(err, op)
 	}
