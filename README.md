@@ -26,6 +26,12 @@ url: http://localhost:8086/
 
 ```json
 {
+    "articles": false
+}
+```
+или
+```json
+{
     "articles": true,
     "all": true,
     "scope": 10
