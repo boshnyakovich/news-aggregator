@@ -4,13 +4,12 @@ import (
 	"github.com/boshnyakovich/news-aggregator/internal/models"
 	"github.com/geziyor/geziyor"
 	"github.com/geziyor/geziyor/export"
+	"github.com/prometheus/common/log"
 	"github.com/stretchr/testify/assert"
+	"html/template"
 	"io/ioutil"
 	"net/http"
 	"testing"
-	"time"
-
-	"html/template"
 )
 
 type TestExporter struct {
@@ -49,7 +48,7 @@ func TestHabrParser_Parse(t *testing.T) {
 
 	testExporter := &TestExporter{}
 
-	go func () {
+	go func() {
 		http.HandleFunc("/test", habrPageTemplate)
 		err := http.ListenAndServe("localhost:9098", nil)
 		assert.NoError(t, err)
@@ -62,8 +61,6 @@ func TestHabrParser_Parse(t *testing.T) {
 		Exporters: []export.Exporter{testExporter},
 	})
 
-	time.Sleep(time.Second * 10)
-
 	gz.Start()
 
 	assert.NotEmpty(t, testExporter.news)
@@ -71,5 +68,7 @@ func TestHabrParser_Parse(t *testing.T) {
 
 func habrPageTemplate(w http.ResponseWriter, r *http.Request) {
 	var homeTemplate = template.Must(template.New("").Parse(string(readHabrFile())))
-	homeTemplate.Execute(w, "")
+	if err := homeTemplate.Execute(w, ""); err != nil {
+		log.Warn("cannot close rows")
+	}
 }

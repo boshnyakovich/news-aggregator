@@ -46,7 +46,11 @@ func main() {
 		log.Fatal("error initializing db", err)
 	}
 
-	defer db.Close()
+	defer func() {
+		if err := db.Close(); err != nil {
+			log.Warn("cannot close db connection")
+		}
+	}()
 
 	repo := repository.NewRepo(db, log)
 	habrParser := parser.NewHabrParser(log)
