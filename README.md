@@ -28,9 +28,15 @@ url: http://localhost:8086/
 {
     "articles": true,
     "all": true,
-    "scope": 10,
-    "best": false,
-    "period": 0
+    "scope": 10
+}
+```
+
+```json
+{
+    "articles": true,
+    "best": true,
+    "period": "day"
 }
 ```
 
