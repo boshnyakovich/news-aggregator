@@ -31,7 +31,7 @@ url: http://localhost:8086/
     "scope": 10
 }
 ```
-
+или
 ```json
 {
     "articles": true,
